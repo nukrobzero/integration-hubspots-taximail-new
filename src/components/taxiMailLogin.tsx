@@ -7,9 +7,15 @@ type DataProps = {
   hendleSubmit: (data: FormData) => void;
   formRef: RefObject<HTMLFormElement>;
   loading: boolean;
+  wrongKey: string;
 };
 
-const TaxiMailLogin: FC<DataProps> = ({ hendleSubmit, formRef, loading }) => {
+const TaxiMailLogin: FC<DataProps> = ({
+  hendleSubmit,
+  formRef,
+  loading,
+  wrongKey,
+}) => {
   return (
     <form
       ref={formRef}
@@ -22,7 +28,7 @@ const TaxiMailLogin: FC<DataProps> = ({ hendleSubmit, formRef, loading }) => {
           type="password"
           name="TapiKey"
           required
-          className="border border-slate-400 rounded-md p-2"
+          className="border border-slate-400 rounded-md p-2 w-full"
         />
       </Fragment>
       <Fragment>
@@ -31,9 +37,10 @@ const TaxiMailLogin: FC<DataProps> = ({ hendleSubmit, formRef, loading }) => {
           type="password"
           name="TsecretKey"
           required
-          className="border border-slate-400 rounded-md p-2"
+          className="border border-slate-400 rounded-md p-2 w-full"
         />
       </Fragment>
+      {wrongKey ? <span className="text-red-700 text-xs">{wrongKey}</span> : ""}
       <div className="flex justify-center items-center w-full py-6">
         <button
           type="submit"
