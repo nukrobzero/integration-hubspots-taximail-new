@@ -85,7 +85,7 @@ export const HubspotGetContacts = async (
       const taximailResponse = await fetch(
         `https://api.taximail.com/v2/list/${listId}/subscribers/import`,
         {
-          method: "POST", // Specify the HTTP method
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionID}`,
