@@ -90,6 +90,7 @@ const TaxiiMail = () => {
   const hendleClearData = async () => {
     setDataTaxiMailList(undefined);
     setLoading(false);
+    setSessionID("");
   };
   return (
     <div className="border shadow-md rounded-md p-6">
