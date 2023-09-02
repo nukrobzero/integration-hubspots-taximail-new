@@ -90,7 +90,7 @@ const TaxiMailList: FC<DataProps> = ({
             </div>
             {loading === true ? (
               <span className="text-red-700 text-xs font-semibold">
-                This process may take more than 30 minutes. Please wait.
+                This process may take more than 10 minutes. Please wait.
               </span>
             ) : (
               ""
