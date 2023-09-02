@@ -91,6 +91,7 @@ const TaxiiMail = () => {
     setDataTaxiMailList(undefined);
     setLoading(false);
     setSessionID("");
+    setLoadingSuccess(false);
   };
   return (
     <div className="border shadow-md rounded-md p-6">
