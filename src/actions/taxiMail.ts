@@ -58,53 +58,66 @@ export const HubspotGetContacts = async (
     const getContacts = async () => {
       let allContacts: HubSpotType[] = [];
       let after: string | undefined = undefined;
-      do {
+
+      async function fetchData() {
         const response = await fetch(after ? `${url}&after=${after}` : url, {
           headers,
         });
         const responseData = await response.json();
+        console.log(responseData);
         const { results, paging } = responseData;
         allContacts.push(...results);
+        console.log(allContacts);
         after = paging?.next?.after;
-      } while (after);
+
+        if (after) {
+          // If there's more data to fetch, introduce a 10-second delay before the next call
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // delay
+          await fetchData();
+        }
+      }
+      await fetchData();
+
       return allContacts;
     };
     const res = await getContacts();
-    try {
-      // Convert fetched data to Taximail-compatible format
-      const subscribersData = res
-        .map((result: HubSpotType) => {
-          const email = result.properties.email || "[No email]";
-          const firstname = result.properties.firstname || "";
-          const lastname = result.properties.lastname || "";
-          const phone = result.properties.phone || "";
-          return `${email},${firstname},${lastname},${phone}`;
-        })
-        .join("|:|");
-      // Import data into Taximail
-      const taximailResponse = await fetch(
-        `https://api.taximail.com/v2/list/${listId}/subscribers/import`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionID}`,
-          },
-          body: JSON.stringify({
-            mode_import: "copyandpaste",
-            subscribers_data: subscribersData,
-            field_terminator: ",",
-            matched_fields: ["email", "Firstname", "Lastname"],
-            not_send_optin_email: true,
-            add_to_suppression_list: "none",
-          }),
-        }
-      );
+    console.log(res);
+    return res;
+    // try {
+    //   // Convert fetched data to Taximail-compatible format
+    //   const subscribersData = res
+    //     .map((result: HubSpotType) => {
+    //       const email = result.properties.email || "[No email]";
+    //       const firstname = result.properties.firstname || "";
+    //       const lastname = result.properties.lastname || "";
+    //       const phone = result.properties.phone || "";
+    //       return `${email},${firstname},${lastname},${phone}`;
+    //     })
+    //     .join("|:|");
+    //   // Import data into Taximail
+    //   const taximailResponse = await fetch(
+    //     `https://api.taximail.com/v2/list/${listId}/subscribers/import`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${sessionID}`,
+    //       },
+    //       body: JSON.stringify({
+    //         mode_import: "copyandpaste",
+    //         subscribers_data: subscribersData,
+    //         field_terminator: ",",
+    //         matched_fields: ["email", "Firstname", "Lastname"],
+    //         not_send_optin_email: true,
+    //         add_to_suppression_list: "none",
+    //       }),
+    //     }
+    //   );
 
-      const taximailResponseData = await taximailResponse.json();
-      return taximailResponseData;
-    } catch (error) {
-      console.error("Error importing data into Taximail:", error);
-    }
+    //   const taximailResponseData = await taximailResponse.json();
+    //   return taximailResponseData;
+    // } catch (error) {
+    //   console.error("Error importing data into Taximail:", error);
+    // }
   }
 };
