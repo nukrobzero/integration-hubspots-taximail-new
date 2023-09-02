@@ -70,6 +70,7 @@ export const HubspotGetContacts = async (
         console.log(allContacts);
         after = paging?.next?.after;
 
+        
         if (after) {
           // If there's more data to fetch, introduce a 10-second delay before the next call
           await new Promise((resolve) => setTimeout(resolve, 1000)); // delay
